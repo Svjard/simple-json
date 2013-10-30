@@ -117,7 +117,7 @@ public class JSONValue {
      * @param value
      * @param writer
      */
-	public static void writeJSONString(Object value, Writer out) throws IOException {
+	public static void writeJSONString(Object value, Writer out, int flag) throws IOException {
 		if(value == null){
 			out.write("null");
 			return;
@@ -167,57 +167,57 @@ public class JSONValue {
 		}
 		
 		if(value instanceof Map){
-			JSONObject.writeJSONString((Map)value, out);
+			JSONObject.writeJSONString((Map)value, out, flag + 1);
 			return;
 		}
 		
 		if(value instanceof Collection){
-			JSONArray.writeJSONString((Collection)value, out);
+			JSONArray.writeJSONString((Collection)value, out, flag);
             return;
 		}
 		
 		if(value instanceof byte[]){
-			JSONArray.writeJSONString((byte[])value, out);
+			JSONArray.writeJSONString((byte[])value, out, flag);
 			return;
 		}
 		
 		if(value instanceof short[]){
-			JSONArray.writeJSONString((short[])value, out);
+			JSONArray.writeJSONString((short[])value, out, flag);
 			return;
 		}
 		
 		if(value instanceof int[]){
-			JSONArray.writeJSONString((int[])value, out);
+			JSONArray.writeJSONString((int[])value, out, flag);
 			return;
 		}
 		
 		if(value instanceof long[]){
-			JSONArray.writeJSONString((long[])value, out);
+			JSONArray.writeJSONString((long[])value, out, flag);
 			return;
 		}
 		
 		if(value instanceof float[]){
-			JSONArray.writeJSONString((float[])value, out);
+			JSONArray.writeJSONString((float[])value, out, flag);
 			return;
 		}
 		
 		if(value instanceof double[]){
-			JSONArray.writeJSONString((double[])value, out);
+			JSONArray.writeJSONString((double[])value, out, flag);
 			return;
 		}
 		
 		if(value instanceof boolean[]){
-			JSONArray.writeJSONString((boolean[])value, out);
+			JSONArray.writeJSONString((boolean[])value, out, flag);
 			return;
 		}
 		
 		if(value instanceof char[]){
-			JSONArray.writeJSONString((char[])value, out);
+			JSONArray.writeJSONString((char[])value, out, flag);
 			return;
 		}
 		
 		if(value instanceof Object[]){
-			JSONArray.writeJSONString((Object[])value, out);
+			JSONArray.writeJSONString((Object[])value, out, flag);
 			return;
 		}
 		
@@ -242,7 +242,7 @@ public class JSONValue {
 		final StringWriter writer = new StringWriter();
 		
 		try{
-			writeJSONString(value, writer);
+			writeJSONString(value, writer, 0);
 			return writer.toString();
 		} catch(IOException e){
 			// This should never happen for a StringWriter

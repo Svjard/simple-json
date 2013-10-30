@@ -7,7 +7,7 @@ package org.json.simple;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -35,8 +35,7 @@ public class JSONObject extends LinkedHashMap implements Map, JSONAware, JSONStr
 		super(map);
 	}
 
-
-    /**
+	/**
      * Encode a map into JSON text and write it to out.
      * If this map is also a JSONAware or JSONStreamAware, JSONAware or JSONStreamAware specific behaviours will be ignored at this top level.
      * 
@@ -45,33 +44,53 @@ public class JSONObject extends LinkedHashMap implements Map, JSONAware, JSONStr
      * @param map
      * @param out
      */
-	public static void writeJSONString(Map map, Writer out) throws IOException {
-		if(map == null){
-			out.write("null");
-			return;
-		}
-		
-		boolean first = true;
-		Iterator iter=map.entrySet().iterator();
-		
-        out.write('{');
-		while(iter.hasNext()){
-            if(first)
-                first = false;
-            else
-                out.write(',');
-			Map.Entry entry=(Map.Entry)iter.next();
-            out.write('\"');
-            out.write(escape(String.valueOf(entry.getKey())));
-            out.write('\"');
-            out.write(':');
-			JSONValue.writeJSONString(entry.getValue(), out);
-		}
-		out.write('}');
+	public static void writeJSONString(Map map, Writer out, int flag) throws IOException {
+   		if (map == null) {
+    		out.write("null");
+      		return;
+    	}
+
+    	boolean first = true;
+    	Iterator iter = map.entrySet().iterator();   
+    	out.write("{\n");
+    	while (iter.hasNext()) {
+      		if (first) {
+        		first = false;
+      		}
+      		else {
+        		out.write(",\n");
+      		}
+      
+      		Map.Entry entry = (Map.Entry)iter.next();
+      		if (flag != 0) {
+        		for (int i = 0; i < flag + 1; i++) {
+          			out.write("\t");
+        		}
+        		out.write("\"");
+      		}
+      		else {
+        		out.write("\t\"");
+      		}
+      		out.write(JSONValue.escape(String.valueOf(entry.getKey())));
+      		out.write("\"");
+      		out.write(":");
+      		JSONValue.writeJSONString(entry.getValue(), out, flag + 1);
+    	}
+
+	    if (flag != 0) {
+	      out.write("\n");
+	      for (int i = 0; i < flag; i++) {
+	        out.write("\t");
+	      }
+	      out.write("}");
+	    }
+	    else {
+	      out.write("\n}\n");
+	    }
 	}
 
 	public void writeJSONString(Writer out) throws IOException{
-		writeJSONString(this, out);
+		writeJSONString(this, out, 0);
 	}
 	
 	/**
@@ -87,7 +106,7 @@ public class JSONObject extends LinkedHashMap implements Map, JSONAware, JSONStr
 		final StringWriter writer = new StringWriter();
 		
 		try {
-			writeJSONString(map, writer);
+			writeJSONString(map, writer, 0);
 			return writer.toString();
 		} catch (IOException e) {
 			// This should never happen with a StringWriter
