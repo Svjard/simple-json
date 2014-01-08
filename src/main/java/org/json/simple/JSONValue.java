@@ -125,7 +125,7 @@ public class JSONValue {
 		
 		if(value instanceof String){		
             out.write('\"');
-			out.write(escape((String)value));
+			out.write(escape((String)value).trim());
             out.write('\"');
 			return;
 		}
